@@ -1,7 +1,50 @@
 {% extends "./layout.html" %}
 
+
+
 {% block container %}
 Index /
 <br> 
-<a href='/admin'>Admin</a>
+<a href='/admin'>Admin</a> <br>
+<a href='/api'>API</a>
+
+<div id="app">
+    <table id="renders">
+        <tr>
+            <th>Date</th>
+            <th>Titre</th>
+            <th>Enoncé</th>
+            <th>Note</th>
+            <th>Commentaire</th>
+        </tr>
+
+    </table>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    const renders = document.querySelector('#renders');
+
+    fetch('http://localhost:8000/api/render/', {
+        method: 'GET',
+        headers: {"Content-Type" : `application/json`},
+    }).then(res => {
+        res.json().then(data => {
+            const results = data.results
+            for(let i = 0; i < results.length; i++) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                                <td>${results[i].date}</td>
+                                <td>${results[i].title}</td>
+                                <td>${results[i].body}</td>
+                                <td>${results[i].note}</td>
+                                <td>${results[i].comment}</td>
+                                `
+                renders.appendChild(tr);
+            }
+        })
+    })
+</script>
 {% endblock %}
